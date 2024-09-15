@@ -34,7 +34,7 @@
 
     exitTxt db 13, 10, "  Thanks for choosing Jull Library! $"
     optionChoice db ?  ; Stores menu option choice
-    endl db 13, 10, '$'  ; Line break
+    endl db 13, 10, '$'  ; endline
 
 .code
 main proc 
