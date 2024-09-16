@@ -30,7 +30,7 @@
     changes dw ? 
     fineperBooks dw ? 
     numBooks dw ? 
-    buffer dw 5 dup (?)  ; Buffer for input
+    buffer dw 6, ?, 7 dup ('$')  ; Buffer for input
 
     exitTxt db 13, 10, "  Thanks for choosing Jull Library! $"
     optionChoice db ?  ; Stores menu option choice
@@ -123,7 +123,7 @@ continuePayment:
     int 21h
 
     ; Capture user input for the number of books
-    mov byte ptr buffer, 5
+    
     lea dx, buffer
     mov ah, 0Ah 
     int 21h   
@@ -143,7 +143,7 @@ continuePayment:
     lea dx, promptFine 
     int 21h
 
-    mov byte ptr buffer, 5 
+    
     lea dx, buffer
     mov ah, 0Ah
     int 21h
@@ -196,7 +196,7 @@ paymentLoop:
     int 21h
 
     ; Capture user input for total amount
-    mov byte ptr buffer, 5
+    
     lea dx, buffer
     mov ah, 0Ah
     int 21h
@@ -244,13 +244,8 @@ finishPayment:
     int 21h
     mov al, endInput
     cmp al, '0'
-    je clearScreen
+    je Reset        ;reset all value to default
 
-    ; Reset all values and return to adding more books if needed
-    xor ax, ax              
-    mov numBooks, ax
-    mov fineperBooks, ax
-    mov totalFine, ax
     jmp continuePayment
 overdueBook endp
 
@@ -304,5 +299,18 @@ clearScreen proc
     int 10h                 ; Call BIOS interrupt to perform the scrolling
     ret                     ; Return from the procedure
 clearScreen endp
+
+Reset proc                  ; reset value to default
+    mov ah, 06h             ; Scroll the entire screen
+    mov bh, 07h             ; Set background and foreground color (light gray on black)
+    mov cx, 0               ; Upper-left corner of the screen (row 0, column 0)
+    mov dx, 184Fh           ; Lower-right corner of the screen (row 24, column 79)
+    int 10h
+    xor ax, ax              
+    mov numBooks, ax
+    mov fineperBooks, ax
+    mov totalFine, ax
+    ret
+Reset endp           
 
 end main                    ; End of the program
